@@ -9,3 +9,5 @@ services:
     envVars:
       - key: ENVIRONMENT
         value: production
+      - key: PERPLEXITY_API_KEY
+        value: your_perplexity_api_key_here
