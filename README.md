@@ -18,16 +18,17 @@ and performing web research.
 
 ## Wingman Tools
 
-### 1. `set_crush_info(crush_name, additional_context="")`
+### 1. `set_crush_info(crush_name, school, major, additional_context="")`
 
-- Store crush information and perform initial web research
-- Uses Perplexity AI to gather public information about your crush
+- Store crush information (name, school, major) and perform initial web research
+- Uses Perplexity AI to gather public information about your crush with targeted
+  school/major context
 - Returns confirmation with research summary
 
 ### 2. `get_crush_advice(question)`
 
 - Get personalized advice about your crush
-- If no crush info exists: asks for clarification
+- If no crush info exists: asks for clarification with name, school, and major
 - If crush info exists: provides advice based on stored research
 
 ### 3. `check_crush_status()`
@@ -77,8 +78,8 @@ Open http://localhost:3000 and connect to `http://localhost:8000/mcp` using
 
 1. **Test sanity check**: Use the `jason_kim_test` tool with "jason" to verify
    server is working
-2. **Test crush setup**: Use `set_crush_info` with a crush name to test research
-   functionality
+2. **Test crush setup**: Use `set_crush_info` with crush name, school, and major
+   to test research functionality
 3. **Test advice**: Use `get_crush_advice` to test personalized advice
 4. **Test status**: Use `check_crush_status` to verify stateful memory
 

@@ -13,7 +13,7 @@ mcp = FastMCP("Wingman MCP")
 # store user's "crush state" in memory
 user_sessions = {}
 
-def research_crush_with_perplexity(crush_name: str) -> str:
+def research_crush_with_perplexity(crush_name: str, school: str, major: str) -> str:
     """Research a person using Perplexity AI."""
     api_key = os.getenv("PERPLEXITY_API_KEY")
     
@@ -27,8 +27,8 @@ def research_crush_with_perplexity(crush_name: str) -> str:
             "Content-Type": "application/json"
         }
         
-        # Create a comprehensive research query
-        query = f"""Tell me about {crush_name}. Include any public information about their:
+        # Create a more targeted research query with school and major
+        query = f"""Tell me about {crush_name}, a {major} student at {school}. Include any public information about their:
         - Education (school, major, graduation year)
         - Professional background or career
         - Interests and hobbies
@@ -90,19 +90,19 @@ def get_crush_summary(user_id: str) -> str:
     return f"Crush: {crush_name} (stored on {timestamp})"
 
 # Wingman MCP Tools
-@mcp.tool(description="Set crush information and research them using web search")
-def set_crush_info(crush_name: str, additional_context: str = "") -> str:
+@mcp.tool(description="Set crush information (name, school, major) and research them using web search")
+def set_crush_info(crush_name: str, school: str, major: str, additional_context: str = "") -> str:
     user_id = "default_user"
-    research_result = research_crush_with_perplexity(crush_name)
+    research_result = research_crush_with_perplexity(crush_name, school, major)
     set_user_crush(user_id, crush_name, research_result)
-    return f"Got it! I've researched {crush_name} and stored their information. I now know about them and can help you with personalized advice!"
+    return f"Got it! I've researched {crush_name} ({major} at {school}) and stored their information. I now know about them and can help you with personalized advice!"
 
 @mcp.tool(description="Get personalized advice about your crush")
 def get_crush_advice(question: str) -> str:
     user_id = "default_user"
     
     if not has_crush_info(user_id):
-        return "I'd love to help you with your crush! But first, I need to know who they are. Can you tell me about your crush using the set_crush_info tool?"
+        return "I'd love to help you with your crush! But first, I need to know who they are. Can you tell me about your crush using the set_crush_info tool? Please provide their name, school, and major (e.g., 'Sarah Chen, Cornell University, Computer Science')."
     
     session = get_user_session(user_id)
     crush_name = session.get("crush_name", "your crush")
@@ -127,7 +127,7 @@ def greet(name: str) -> str:
 @mcp.tool(description="Get information about the MCP server including name, version, environment, and Python version")
 def get_server_info() -> dict:
     return {
-        "server_name": "Sample MCP Server",
+        "server_name": "Wingman MCP",
         "version": "1.0.0",
         "environment": os.environ.get("ENVIRONMENT", "development"),
         "python_version": os.sys.version.split()[0]
